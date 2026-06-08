@@ -56,7 +56,7 @@ function fmtDate(v) {
   if (m[0].includes("/")) return `${m[3]}-${String(m[1]).padStart(2,"0")}-${String(m[2]).padStart(2,"0")}`;
   return m[0];
 }
-const yearOf = (date, fallback) => (/^(\d{4})/.exec(date)?.[1]) || clean(fallback);
+const yearOf = (date, fallback) => (/\b(\d{4})\b/.exec(String(date))?.[1]) || clean(fallback);
 
 // Map a header row -> column indexes, tolerant of layout (xlsx has no Year col; csv does).
 function indexCols(header) {
@@ -85,6 +85,7 @@ function loadRows() {
     const r = matrix[i];
     const title = clean(r[cols.title]);
     if (!title) continue;
+    if (title.toLowerCase() === "title" || clean(r[cols.date]).toLowerCase() === "date") continue; // repeated header rows
     const date = fmtDate(r[cols.date]);
     const note = clean(r[cols.note]);
     out.push({
