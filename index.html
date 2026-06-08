@@ -1,0 +1,330 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+<title>Geo's Reading List</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,800;1,500&family=Spectral:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#f4efe4; --paper:#fffdf7; --ink:#23201a; --muted:#6f6757;
+    --green:#1f3d2f; --green-2:#2c5440; --gold:#a9802f; --gold-2:#c79a44;
+    --burgundy:#6e2230; --line:#e3dac6;
+    --font-display:'Playfair Display',Georgia,serif;
+    --font-body:'Spectral',Georgia,serif;
+    --radius:10px; --shadow:0 6px 22px rgba(35,32,26,.14);
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:var(--bg); color:var(--ink); font-family:var(--font-body);
+    -webkit-user-select:none; user-select:none; -webkit-tap-highlight-color:transparent;
+    line-height:1.55;
+  }
+  input{font:inherit}
+  /* ---- header ---- */
+  header.hero{
+    background:radial-gradient(120% 140% at 50% -20%, var(--green-2), var(--green) 70%);
+    color:#f6f1e4; padding:54px 20px 40px; text-align:center; position:relative;
+    border-bottom:3px solid var(--gold);
+  }
+  .hero h1{font-family:var(--font-display); font-weight:800; font-size:clamp(34px,6vw,58px); margin:0; letter-spacing:.5px}
+  .hero .rule{width:64px;height:2px;background:var(--gold);margin:14px auto;opacity:.9}
+  .hero p{margin:0 auto; max-width:640px; color:#e7dfca; font-style:italic; font-size:clamp(15px,2.2vw,18px)}
+  .hero .stats{margin-top:14px; font-style:normal; letter-spacing:.14em; text-transform:uppercase; font-size:12px; color:var(--gold-2)}
+  /* ---- controls ---- */
+  .controls{position:sticky; top:0; z-index:30; background:rgba(244,239,228,.94); backdrop-filter:blur(8px); border-bottom:1px solid var(--line); padding:14px 16px}
+  .controls .wrap{max-width:1180px; margin:0 auto; display:flex; flex-wrap:wrap; gap:10px; align-items:center}
+  .search{flex:1 1 240px; min-width:180px; display:flex; align-items:center; gap:8px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:9px 16px; box-shadow:var(--shadow)}
+  .search input{border:0; outline:0; background:transparent; width:100%; color:var(--ink)}
+  .search svg{flex:0 0 16px;opacity:.5}
+  select{appearance:none; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:9px 34px 9px 16px; color:var(--ink); cursor:pointer; box-shadow:var(--shadow);
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236f6757' stroke-width='3'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E"); background-repeat:no-repeat; background-position:right 14px center}
+  .fav-toggle{display:flex; align-items:center; gap:7px; background:var(--paper); border:1px solid var(--line); border-radius:999px; padding:9px 16px; cursor:pointer; box-shadow:var(--shadow); white-space:nowrap}
+  .fav-toggle.on{background:var(--gold); border-color:var(--gold); color:#fff}
+  .fav-toggle .star{font-size:15px}
+  .chips{max-width:1180px; margin:10px auto 0; display:flex; gap:8px; flex-wrap:wrap}
+  .chip{font-size:13px; padding:5px 13px; border-radius:999px; border:1px solid var(--line); background:var(--paper); cursor:pointer; color:var(--muted)}
+  .chip.on{background:var(--green); border-color:var(--green); color:#f6f1e4}
+  .count{max-width:1180px; margin:12px auto 0; color:var(--muted); font-style:italic; font-size:14px}
+  /* ---- grid ---- */
+  main{max-width:1180px; margin:0 auto; padding:18px 16px 80px}
+  .grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:26px 20px}
+  .card{cursor:pointer; text-align:left; transition:transform .15s ease}
+  .card:hover{transform:translateY(-4px)}
+  .cover{position:relative; aspect-ratio:2/3; border-radius:6px; overflow:hidden; box-shadow:var(--shadow); background:linear-gradient(135deg,var(--green-2),var(--green)); display:flex; align-items:center; justify-content:center}
+  .cover img{width:100%; height:100%; object-fit:cover; display:block}
+  .cover .ph{padding:14px; text-align:center; color:#e7dfca; font-family:var(--font-display); font-size:15px; line-height:1.3}
+  .cover .ph small{display:block; margin-top:8px; font-family:var(--font-body); font-style:italic; font-size:12px; color:var(--gold-2)}
+  .fav-badge{position:absolute; top:8px; right:8px; width:26px; height:26px; border-radius:50%; background:var(--gold); color:#fff; display:flex; align-items:center; justify-content:center; font-size:14px; box-shadow:0 2px 6px rgba(0,0,0,.3)}
+  .meta{margin-top:9px}
+  .meta .t{font-family:var(--font-display); font-weight:700; font-size:15px; line-height:1.25}
+  .meta .a{color:var(--muted); font-size:13px; font-style:italic; margin-top:2px}
+  .meta .y{color:var(--gold); font-size:11px; letter-spacing:.1em; text-transform:uppercase; margin-top:4px}
+  /* ---- modal ---- */
+  .overlay{position:fixed; inset:0; background:rgba(20,18,14,.62); backdrop-filter:blur(3px); z-index:60; display:none; align-items:flex-start; justify-content:center; padding:30px 16px; overflow:auto}
+  .overlay.open{display:flex}
+  .sheet{background:var(--paper); max-width:720px; width:100%; border-radius:var(--radius); box-shadow:0 30px 80px rgba(0,0,0,.4); overflow:hidden; border:1px solid var(--line); animation:rise .2s ease}
+  @keyframes rise{from{transform:translateY(14px);opacity:0}to{transform:none;opacity:1}}
+  .sheet .head{display:flex; gap:20px; padding:24px; background:linear-gradient(135deg,#fbf7ec,#f1e9d6); border-bottom:1px solid var(--line)}
+  .sheet .head .cover{flex:0 0 130px; width:130px; aspect-ratio:2/3}
+  .sheet .head .info{flex:1; min-width:0}
+  .sheet h2{font-family:var(--font-display); font-weight:800; font-size:24px; margin:2px 0 6px; line-height:1.15}
+  .sheet .by{color:var(--muted); font-style:italic; font-size:16px}
+  .sheet .tags{margin-top:12px; display:flex; gap:7px; flex-wrap:wrap}
+  .sheet .tag{font-size:11px; letter-spacing:.08em; text-transform:uppercase; background:var(--green); color:#f6f1e4; padding:4px 10px; border-radius:999px}
+  .sheet .tag.year{background:transparent; color:var(--gold); border:1px solid var(--gold)}
+  .sheet .body{padding:22px 24px 26px}
+  .sheet .body h3{font-family:var(--font-body); text-transform:uppercase; letter-spacing:.14em; font-size:11px; color:var(--muted); margin:0 0 6px; font-weight:500}
+  .sheet .syn{font-size:16px; color:var(--ink); -webkit-user-select:text; user-select:text}
+  .sheet .note{margin-top:20px; border-left:3px solid var(--gold); background:#faf4e4; padding:12px 16px; border-radius:0 8px 8px 0}
+  .sheet .note .q{font-family:var(--font-display); font-size:18px; font-style:italic; color:var(--burgundy)}
+  .sheet .links{margin-top:20px; display:flex; gap:14px; align-items:center}
+  .sheet .links a{color:var(--green-2); font-size:13px; text-decoration:none; border-bottom:1px solid var(--gold)}
+  .close{position:sticky; top:0; float:right; margin:-6px -6px 0 0; background:transparent; border:0; font-size:26px; color:var(--muted); cursor:pointer; line-height:1}
+  .empty{text-align:center; color:var(--muted); font-style:italic; padding:60px 0}
+  footer{text-align:center; color:var(--muted); font-size:13px; padding:24px; font-style:italic}
+  /* ---- edit mode / picker ---- */
+  .unv-badge{position:absolute; top:8px; left:8px; width:24px; height:24px; border-radius:50%; background:var(--burgundy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:13px; font-weight:700; box-shadow:0 2px 6px rgba(0,0,0,.3)}
+  .corrected-badge{position:absolute; top:8px; left:8px; width:24px;height:24px;border-radius:50%; background:var(--green-2); color:#fff; display:flex;align-items:center;justify-content:center;font-size:12px}
+  .editbar{background:var(--burgundy); color:#fff; text-align:center; padding:8px; font-size:13px; letter-spacing:.05em}
+  .editbar b{color:var(--gold-2)}
+  .editbar button{margin-left:12px; background:var(--gold); color:#fff; border:0; border-radius:999px; padding:5px 14px; cursor:pointer; font:inherit; font-size:12px}
+  .editor{margin-top:22px; border-top:1px dashed var(--line); padding-top:16px}
+  .editor>button{background:var(--burgundy); color:#fff; border:0; border-radius:8px; padding:10px 16px; cursor:pointer; font:inherit}
+  .picker{margin-top:14px}
+  .psearch{display:flex; gap:8px; margin-bottom:12px}
+  .psearch input{flex:1; border:1px solid var(--line); border-radius:8px; padding:9px 12px; -webkit-user-select:text; user-select:text}
+  .psearch button{background:var(--green); color:#fff; border:0; border-radius:8px; padding:0 16px; cursor:pointer; font:inherit}
+  .cand{display:flex; gap:12px; padding:10px; border:1px solid var(--line); border-radius:8px; margin-bottom:8px; align-items:center}
+  .cand img{width:46px; height:69px; object-fit:cover; border-radius:4px; background:var(--line); flex:0 0 46px}
+  .cand .ci{flex:1; min-width:0}
+  .cand .ct{font-family:var(--font-display); font-weight:700; font-size:15px}
+  .cand .ca{color:var(--muted); font-size:13px; font-style:italic}
+  .cand button{background:var(--green-2); color:#fff; border:0; border-radius:999px; padding:7px 14px; cursor:pointer; font:inherit; font-size:13px; white-space:nowrap}
+  .cand.cur{border-color:var(--gold); background:#faf4e4}
+  .pmsg{color:var(--muted); font-style:italic; font-size:14px; padding:8px 0}
+</style>
+</head>
+<body>
+<header class="hero">
+  <h1>Geo's Reading List</h1>
+  <div class="rule"></div>
+  <p id="intro">A life in history — presidents, the Civil War, two world wars, and the sea.</p>
+  <div class="stats" id="stats">Loading…</div>
+</header>
+
+<div class="controls">
+  <div class="wrap">
+    <label class="search">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <input id="q" type="search" placeholder="Search title, author, or note…" />
+    </label>
+    <select id="year"></select>
+    <select id="sort">
+      <option value="recent">Recently read</option>
+      <option value="oldest">Oldest first</option>
+      <option value="title">Title A–Z</option>
+      <option value="author">Author A–Z</option>
+    </select>
+    <button class="fav-toggle" id="favBtn"><span class="star">★</span> Favorites</button>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div class="count" id="count"></div>
+</div>
+
+<main><div class="grid" id="grid"></div><div class="empty" id="empty" style="display:none">No books match.</div></main>
+<footer>Built from Geo's own spreadsheet · covers &amp; details via OpenLibrary</footer>
+
+<div class="overlay" id="overlay"><div class="sheet" id="sheet"></div></div>
+
+<script>
+const params = new URLSearchParams(location.search);
+const EDIT = params.has("edit");                 // ?edit=1 → maintainer tools (grandpa never sees these)
+const state = { books:[], q:"", year:"", theme:"", fav:false, sort:"recent", unv:false };
+const $ = (s)=>document.querySelector(s);
+
+// ---- local corrections (maintainer "Wrong book!" picks) ----
+const COR_KEY = "geo_corrections";
+let corrections = {};
+try { corrections = JSON.parse(localStorage.getItem(COR_KEY) || "{}"); } catch {}
+const corKey = (b)=>`${b.title}|${b.date}`;
+function saveCorrections(){ localStorage.setItem(COR_KEY, JSON.stringify(corrections)); }
+function applyCor(b){
+  const c = corrections[corKey(b)]; if(!c) return b;
+  return { ...b,
+    cover: c.coverUrl || (c.coverId ? `https://covers.openlibrary.org/b/id/${c.coverId}-L.jpg` : b.cover),
+    olKey: c.olKey || b.olKey, unverified:false, _corrected:true };
+}
+
+const MONTHS=["January","February","March","April","May","June","July","August","September","October","November","December"];
+function readLabel(b){
+  const m=/^(\d{4})-(\d{2})-(\d{2})$/.exec(b.date||"");
+  if(!m) return b.yearRead||"";
+  const [_,y,mo,d]=m;
+  if(mo==="01"&&d==="01") return y;          // bulk-entered placeholder → year only
+  if(mo==="06"&&d==="01") return y;
+  return `${MONTHS[+mo-1]} ${y}`;
+}
+function esc(s){return (s||"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+async function load(){
+  const r = await fetch("./data/books.json?"+Date.now());
+  state.books = await r.json();
+  const yrs=[...new Set(state.books.map(b=>b.yearRead).filter(Boolean))].sort((a,b)=>b-a);
+  $("#year").innerHTML='<option value="">All years</option>'+yrs.map(y=>`<option value="${y}">${y}</option>`).join("");
+  const themes=[...new Set(state.books.flatMap(b=>b.themes||[]))];
+  $("#chips").innerHTML=themes.map(t=>`<button class="chip" data-t="${esc(t)}">${esc(t)}</button>`).join("");
+  const favN=state.books.filter(b=>b.favorite).length;
+  $("#stats").textContent=`${state.books.length} books · ${yrs[yrs.length-1]}–${yrs[0]} · ${favN} favorites`;
+  if(EDIT) setupEditBar();
+  bind(); render();
+}
+
+function setupEditBar(){
+  const unv = state.books.filter(b=>b.unverified && !corrections[corKey(b)]).length;
+  const bar=document.createElement("div");
+  bar.className="editbar";
+  bar.innerHTML=`Maintainer mode · <b id="unvN">${unv}</b> unverified · <b id="corN">${Object.keys(corrections).length}</b> corrections
+    <button id="unvOnly">Show unverified</button>
+    <button id="exportCor">⬇ Export corrections</button>`;
+  document.body.insertBefore(bar, document.body.firstChild);
+  $("#unvOnly").onclick=()=>{ state.unv=!state.unv; $("#unvOnly").textContent=state.unv?"Show all":"Show unverified"; render(); };
+  $("#exportCor").onclick=exportCorrections;
+}
+function refreshEditCounts(){
+  if(!EDIT) return;
+  const unv = state.books.filter(b=>b.unverified && !corrections[corKey(b)]).length;
+  if($("#unvN")) $("#unvN").textContent=unv;
+  if($("#corN")) $("#corN").textContent=Object.keys(corrections).length;
+}
+function exportCorrections(){
+  const blob=new Blob([JSON.stringify(corrections,null,2)],{type:"application/json"});
+  const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download="overrides.json"; a.click();
+}
+
+function filtered(){
+  let a=state.books.slice();
+  if(state.q){const q=state.q.toLowerCase(); a=a.filter(b=>(b.title+" "+b.author+" "+(b.note||"")).toLowerCase().includes(q));}
+  if(state.year) a=a.filter(b=>b.yearRead===state.year);
+  if(state.theme) a=a.filter(b=>(b.themes||[]).includes(state.theme));
+  if(state.fav) a=a.filter(b=>b.favorite);
+  if(state.unv) a=a.filter(b=>b.unverified && !corrections[corKey(b)]);
+  const cmp={
+    recent:(x,y)=>(y.date||"").localeCompare(x.date||""),
+    oldest:(x,y)=>(x.date||"").localeCompare(y.date||""),
+    title:(x,y)=>x.title.localeCompare(y.title),
+    author:(x,y)=>(x.author||"").localeCompare(y.author||""),
+  }[state.sort];
+  return a.sort(cmp);
+}
+
+function coverHTML(b,cls=""){
+  if(b.cover) return `<div class="cover ${cls}"><img loading="lazy" src="${esc(b.cover)}" alt="" onerror="this.parentNode.innerHTML='<div class=\\'ph\\'>${esc(b.title).replace(/'/g,"&#39;")}<small>${esc(b.author)}</small></div>'"></div>`;
+  return `<div class="cover ${cls}"><div class="ph">${esc(b.title)}<small>${esc(b.author)}</small></div></div>`;
+}
+
+function render(){
+  const list=filtered();
+  $("#count").textContent=`Showing ${list.length} of ${state.books.length} books`;
+  $("#empty").style.display=list.length?"none":"block";
+  $("#grid").innerHTML=list.map(raw=>{ const b=applyCor(raw); return `
+    <div class="card" data-id="${b.id}">
+      ${coverHTML(b)}${b.favorite?'<div class="fav-badge">★</div>':''}
+      ${EDIT&&b._corrected?'<div class="corrected-badge">✓</div>':(EDIT&&b.unverified?'<div class="unv-badge">?</div>':'')}
+      <div class="meta">
+        <div class="t">${esc(b.title)}</div>
+        <div class="a">${esc(b.author)}</div>
+        <div class="y">Read ${esc(readLabel(b))}</div>
+      </div>
+    </div>`; }).join("");
+}
+
+let currentRaw=null;
+function openBook(raw){
+  currentRaw=raw;
+  const b=applyCor(raw);
+  const tags=[(b.favorite?'<span class="tag" style="background:var(--gold)">★ Favorite</span>':''),
+    ...(b.themes||[]).map(t=>`<span class="tag">${esc(t)}</span>`),
+    b.pubYear?`<span class="tag year">Published ${b.pubYear}</span>`:''].filter(Boolean).join("");
+  const syn = b.synopsis || b.firstSentence || "";
+  $("#sheet").innerHTML=`
+    <button class="close" id="closeX">×</button>
+    <div class="head">
+      ${coverHTML(b)}
+      <div class="info">
+        <h2>${esc(b.title)}</h2>
+        <div class="by">by ${esc(b.author)}</div>
+        <div class="tags">${tags}</div>
+      </div>
+    </div>
+    <div class="body">
+      <h3>Read ${esc(readLabel(b))}</h3>
+      ${syn?`<p class="syn">${esc(syn)}</p>`:'<p class="syn" style="color:var(--muted);font-style:italic">No summary on file yet.</p>'}
+      ${b.note?`<div class="note"><div class="q">“${esc(b.note)}”</div></div>`:''}
+      ${b.olKey?`<div class="links"><a href="https://openlibrary.org${esc(b.olKey)}" target="_blank" rel="noopener">View on OpenLibrary →</a></div>`:''}
+      ${EDIT?`<div class="editor">
+        ${b._corrected?'<p class="pmsg" style="color:var(--green-2)">✓ Corrected — export &amp; commit overrides.json to make it permanent.</p>':''}
+        <button id="wrongBtn">✎ Wrong book? Pick the right one</button>
+        <div class="picker" id="picker" style="display:none">
+          <div class="psearch"><input id="pq" value="${esc(b.title+' '+b.author)}" /><button id="pgo">Search</button></div>
+          <div id="presults"></div>
+          <div class="psearch" style="margin-top:10px"><input id="pcover" placeholder="…or paste a cover image URL (for books OpenLibrary has no cover for)" /><button id="pcoversave">Set cover</button></div>
+        </div></div>`:''}
+    </div>`;
+  $("#overlay").classList.add("open"); document.body.style.overflow="hidden";
+  $("#closeX").onclick=closeBook;
+  if(EDIT){
+    $("#wrongBtn").onclick=()=>{ const p=$("#picker"); const show=p.style.display==="none"; p.style.display=show?"block":"none"; if(show) runPicker(); };
+    $("#pgo").onclick=runPicker;
+    $("#pq").addEventListener("keydown",e=>{ if(e.key==="Enter") runPicker(); });
+    $("#pcoversave").onclick=()=>{ const url=$("#pcover").value.trim(); if(!url) return;
+      const k=corKey(currentRaw); corrections[k]={ ...(corrections[k]||{}), coverUrl:url };
+      saveCorrections(); refreshEditCounts(); render(); openBook(currentRaw); };
+  }
+}
+function closeBook(){$("#overlay").classList.remove("open"); document.body.style.overflow="";}
+
+async function runPicker(){
+  const q=$("#pq").value.trim(); const box=$("#presults");
+  box.innerHTML='<div class="pmsg">Searching OpenLibrary…</div>';
+  let docs=[];
+  try{
+    const r=await fetch(`https://openlibrary.org/search.json?q=${encodeURIComponent(q)}&limit=8&fields=key,cover_i,first_publish_year,author_name,title`);
+    docs=(await r.json()).docs||[];
+  }catch{ box.innerHTML='<div class="pmsg">Search failed — check connection.</div>'; return; }
+  if(!docs.length){ box.innerHTML='<div class="pmsg">No matches. Try editing the search above.</div>'; return; }
+  const cur=corrections[corKey(currentRaw)];
+  box.innerHTML=docs.map((d,i)=>`
+    <div class="cand ${cur&&cur.olKey===d.key?'cur':''}" data-i="${i}">
+      <img src="${d.cover_i?`https://covers.openlibrary.org/b/id/${d.cover_i}-M.jpg`:''}" alt="" onerror="this.style.visibility='hidden'">
+      <div class="ci"><div class="ct">${esc(d.title||'')}</div>
+        <div class="ca">${esc((d.author_name||[]).join(', '))}${d.first_publish_year?' · '+d.first_publish_year:''}</div></div>
+      <button data-pick="${i}">Use this</button>
+    </div>`).join("");
+  box.querySelectorAll("[data-pick]").forEach(btn=>{
+    btn.onclick=()=>{ const d=docs[+btn.dataset.pick];
+      corrections[corKey(currentRaw)]={olKey:d.key, coverId:d.cover_i||null, title:d.title, author:(d.author_name||[]).join(', ')};
+      saveCorrections(); refreshEditCounts(); render(); openBook(currentRaw);
+    };
+  });
+}
+
+function bind(){
+  $("#q").oninput=e=>{state.q=e.target.value;render();};
+  $("#year").onchange=e=>{state.year=e.target.value;render();};
+  $("#sort").onchange=e=>{state.sort=e.target.value;render();};
+  $("#favBtn").onclick=()=>{state.fav=!state.fav;$("#favBtn").classList.toggle("on",state.fav);render();};
+  $("#chips").onclick=e=>{const c=e.target.closest(".chip");if(!c)return;
+    const t=c.dataset.t; state.theme=state.theme===t?"":t;
+    document.querySelectorAll(".chip").forEach(x=>x.classList.toggle("on",x.dataset.t===state.theme));render();};
+  $("#grid").onclick=e=>{const c=e.target.closest(".card");if(!c)return;openBook(state.books.find(b=>b.id==c.dataset.id));};
+  $("#overlay").onclick=e=>{if(e.target.id==="overlay")closeBook();};
+  document.addEventListener("keydown",e=>{if(e.key==="Escape")closeBook();});
+}
+load();
+</script>
+</body>
+</html>

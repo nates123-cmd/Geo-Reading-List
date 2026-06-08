@@ -1,0 +1,15 @@
+{
+  "name": "geo-reading-list",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Geo's reading list — glossy library site, auto-built from a OneDrive Excel sheet.",
+  "scripts": {
+    "build": "node build.mjs",
+    "fetch": "bash scripts/fetch-onedrive.sh",
+    "serve": "python3 -m http.server 8731"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5"
+  }
+}

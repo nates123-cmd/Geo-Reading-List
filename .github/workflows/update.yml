@@ -1,0 +1,48 @@
+name: Update reading list
+
+on:
+  schedule:
+    - cron: "0 8 * * *"      # daily ~08:00 UTC
+  workflow_dispatch:          # manual "Run workflow" button
+
+permissions:
+  contents: write             # allow committing the refreshed data
+
+concurrency:
+  group: update
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Pull latest sheet from OneDrive
+        env:
+          GEO_SHEET_URL: ${{ vars.GEO_SHEET_URL }}
+        run: npm run fetch
+
+      - name: Enrich + rebuild books.json
+        env:
+          GOOGLE_BOOKS_KEY: ${{ secrets.GOOGLE_BOOKS_KEY }}
+        run: npm run build
+
+      - name: Commit changes if any
+        run: |
+          git config user.name  "geo-bot"
+          git config user.email "actions@github.com"
+          git add data/books.json data/source.xlsx
+          if git diff --cached --quiet; then
+            echo "No changes."
+          else
+            git commit -m "Auto-update reading list ($(date -u +%Y-%m-%d))"
+            git push
+          fi
