@@ -2,3 +2,5 @@ node_modules/
 data/source.csv
 *.log
 .DS_Store
+
+data/source.xlsx

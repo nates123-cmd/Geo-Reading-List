@@ -39,7 +39,7 @@ jobs:
         run: |
           git config user.name  "geo-bot"
           git config user.email "actions@github.com"
-          git add data/books.json data/source.xlsx
+          git add data/books.json
           if git diff --cached --quiet; then
             echo "No changes."
           else
