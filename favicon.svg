@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="14" fill="#1f3d2f"/>
+  <!-- sails: square-rigger, three masts of stacked square sails -->
+  <g fill="#f6f1e4">
+    <!-- foremast -->
+    <path d="M14 16h10v8H14z"/>
+    <path d="M13 26h12v9H13z"/>
+    <!-- mainmast (tallest) -->
+    <path d="M28 11h12v9H28z"/>
+    <path d="M27 22h14v11H27z"/>
+    <!-- mizzen -->
+    <path d="M44 16h8v8h-8z"/>
+    <path d="M43 26h10v9H43z"/>
+  </g>
+  <!-- masts + yards -->
+  <g stroke="#a9802f" stroke-width="1.6" stroke-linecap="round">
+    <line x1="19" y1="13" x2="19" y2="40"/>
+    <line x1="34" y1="8"  x2="34" y2="40"/>
+    <line x1="48" y1="13" x2="48" y2="40"/>
+  </g>
+  <!-- pennant -->
+  <path d="M34 8l8 2-8 2z" fill="#c79a44"/>
+  <!-- hull -->
+  <path d="M10 40h44l-6 9a4 4 0 0 1-3.4 2H19.4a4 4 0 0 1-3.4-2z" fill="#a9802f"/>
+  <rect x="10" y="38" width="44" height="3" rx="1.5" fill="#c79a44"/>
+  <!-- waves -->
+  <g fill="none" stroke="#2c5440" stroke-width="2.4" stroke-linecap="round">
+    <path d="M6 55q4-3 8 0t8 0 8 0 8 0 8 0 8 0"/>
+  </g>
+</svg>
